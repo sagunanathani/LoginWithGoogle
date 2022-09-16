@@ -1,13 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import App from './App1';  // class component
 import './index.css';
-import App from './App';
+// import App from './App'; // fun component
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    {/* function component */}
+    {/* <App /> */} 
+    {/* class component */}
+    <App></App> 
   </React.StrictMode>
 );
 
