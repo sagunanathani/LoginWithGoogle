@@ -1,61 +1,46 @@
-import React, { useState,useEffect } from "react";
+import React, { Component } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
-import { gapi } from 'gapi-script';
 
-export default function App() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [url, setUrl] = useState("");
-  const [loginStatus, setLoginStatus] = useState(false);
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { isLoggedIn: false };
+  }
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1 className="App-title">login by Gmail</h1>
+        </header>
 
-  const clientId = '137786288723-ljm6i4dkav5nb3h04dk4p9anm94mo3s3.apps.googleusercontent.com';
-
-  useEffect(() => {
-    const initClient = () => {
-        gapi.client.init({
-            clientId: clientId,
-            scope: ''
-        });
-    };
-    gapi.load('client:auth2', initClient);
-});
-
-  const responseGoogle = response => {
-    console.log(response);
-    setName(response.profileObj.name);
-    setEmail(response.profileObj.email);
-    setUrl(response.profileObj.imageUrl);
-    setLoginStatus(true);
-  };
-  const logout = () => {
-    console.log("logout successful");
-    setLoginStatus(false);
-  };
-  return (
-    <div className="App">
-      <h1>Login with Google</h1>
-      {!loginStatus && (
-        <GoogleLogin
-          clientId="137786288723-ljm6i4dkav5nb3h04dk4p9anm94mo3s3.apps.googleusercontent.com"
-          buttonText="Login"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          cookiePolicy={"single_host_origin"}
-        />
-      )}
-      {loginStatus && (
-        <div>
-          <h2>Welcome {name}</h2>
-          <h2>Email: {email}</h2>
-          <img src={url} alt={name} />
-          <br />
-          <GoogleLogout
+        {!this.state.isLoggedIn ? (
+          <GoogleLogin
+            className="GoogButton"
             clientId="137786288723-ljm6i4dkav5nb3h04dk4p9anm94mo3s3.apps.googleusercontent.com"
-            buttonText="Logout"
-            onLogoutSuccess={logout}
+            buttonText="Login"
+            onSuccess={response => {
+              this.setState(() => {
+                return { isLoggedIn: true };
+              });
+            }}
+            onFailure={response => {
+              this.setState(() => {
+                return { isLoggedIn: false };
+              });
+            }}
           />
-        </div>
-      )}
-    </div>
-  );
+        ) : (
+          <GoogleLogout
+            buttonText="Logout"
+            onLogoutSuccess={response => {
+              this.setState(() => {
+                return { isLoggedIn: false };
+              });
+            }}
+          />
+        )}
+      </div>
+    );
+  }
 }
+export default App;
